@@ -22,6 +22,11 @@ class MyViewModel : ViewModel() {
 
     var showNewerToast = false
 
+    val sendDownData = HashMap<Int, String>()
+    val sendUpData = HashMap<Int, String>()
+    val sendDownType = HashMap<Int, String>()
+    val sendUpType = HashMap<Int, String>()
+
 
     init {
         _checkUpdate()

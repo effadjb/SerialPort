@@ -22,12 +22,15 @@ class MessageFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val myViewModel =
-            ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[MyViewModel::class.java]
+            ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory())[MyViewModel::class.java]
 
         messagesList.setAdapter(MessageUtil.messagesListAdapter)
 
+        val serialPort = SerialPortBuilder.build(requireActivity())
+
         messageInputView.setInputListener {
             SerialPortBuilder.sendData(it.toString())
+//            serialPort.sendData(it.toString())
             MessageUtil.sendMessage(it.toString())
             return@setInputListener true
         }

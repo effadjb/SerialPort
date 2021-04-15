@@ -15,6 +15,11 @@ object SharedPreferencesUtil {
         return sp.getString(key, "")
     }
 
+    fun getInt(context: Context, key: String): Int {
+        val sp = context.getSharedPreferences("SharedPreferencesName", Context.MODE_PRIVATE)
+        return sp.getInt(key, 0)
+    }
+
     fun clearSp(context: Context) {
         val sp = context.getSharedPreferences("SharedPreferencesName", Context.MODE_PRIVATE)
         val editor = sp.edit()

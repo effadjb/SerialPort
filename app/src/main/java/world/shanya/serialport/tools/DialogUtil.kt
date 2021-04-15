@@ -6,10 +6,14 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.widget.Button
 import kotlinx.android.synthetic.main.button_info_dialog.view.*
+import world.shanya.serialport.MyViewModel
 import world.shanya.serialport.R
+import world.shanya.serialport.SerialPort
 
 object DialogUtil {
-    fun createDialog(context: Context, button: Button) {
+    private val myViewModel = MyViewModel()
+
+    fun createDialog(context: Context, myViewModel: MyViewModel, button: Button) {
         val layoutInflater = LayoutInflater.from(context)
         val dialogView = layoutInflater.inflate(R.layout.button_info_dialog, null)
         dialogView.editTextTextButtonName.text = Editable.Factory.getInstance()
@@ -51,31 +55,37 @@ object DialogUtil {
                     context,
                     "${button.id} DownData",
                     dialogView.editTextTextDownData.text.toString())
+                myViewModel.sendDownData[button.id] = dialogView.editTextTextDownData.text.toString()
                 SharedPreferencesUtil.putString(
                     context,
                     "${button.id} UpData",
                     dialogView.editTextTextUpData.text.toString())
+                myViewModel.sendUpData[button.id] = dialogView.editTextTextUpData.text.toString()
                 if (dialogView.radioGroupDownSend.checkedRadioButtonId == R.id.radioButtonDownHex) {
                     SharedPreferencesUtil.putString(
                         context,
                         "${button.id} DownDataType",
                         "Hex")
+                    myViewModel.sendDownType[button.id] = "Hex"
                 } else {
                     SharedPreferencesUtil.putString(
                         context,
                         "${button.id} DownDataType",
                         "Str")
+                    myViewModel.sendDownType[button.id] = "Str"
                 }
                 if (dialogView.radioGroupUpSend.checkedRadioButtonId == R.id.radioButtonUphex) {
                     SharedPreferencesUtil.putString(
                         context,
                         "${button.id} UpDataType",
                         "Hex")
+                    myViewModel.sendUpType[button.id] = "Hex"
                 } else {
                     SharedPreferencesUtil.putString(
                         context,
                         "${button.id} UpDataType",
                         "Str")
+                    myViewModel.sendUpType[button.id] = "Str"
                 }
             }
             .setNegativeButton("No") { _, _ ->

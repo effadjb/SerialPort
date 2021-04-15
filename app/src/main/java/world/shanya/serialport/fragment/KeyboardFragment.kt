@@ -7,8 +7,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.fragment_keyboard.*
+import world.shanya.serialport.MyViewModel
 import world.shanya.serialport.R
+import world.shanya.serialport.SerialPort
 import world.shanya.serialport.SerialPortBuilder
 import world.shanya.serialport.tools.DialogUtil
 import world.shanya.serialport.tools.SharedPreferencesUtil
@@ -25,11 +28,13 @@ class KeyboardFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_keyboard, container, false)
     }
 
-    private val sendDownData = HashMap<Int,String>()
-    private val sendUpData = HashMap<Int,String>()
+    private lateinit var myViewModel: MyViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        myViewModel =
+            ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory())[MyViewModel::class.java]
 
         val buttons = arrayListOf<Button>(button1,button2,button3,button4,button5,
             button6,button7,button8,button9,button10,
@@ -37,10 +42,10 @@ class KeyboardFragment : Fragment() {
 
         for (button in buttons){
             button.text = SharedPreferencesUtil.getString(requireActivity(),"${button.id} Name")
-            sendDownData[button.id] =
+            myViewModel.sendDownData[button.id] =
                 SharedPreferencesUtil.getString(requireActivity(), "${button.id} DownData")
                     .toString()
-            sendUpData[button.id] =
+            myViewModel.sendUpData[button.id] =
                 SharedPreferencesUtil.getString(requireActivity(), "${button.id} UpData")
                     .toString()
             button.setOnClickListener(ButtonListener())
@@ -53,7 +58,7 @@ class KeyboardFragment : Fragment() {
 
         override fun onClick(v: View?) {
             if (switchKeyboard.isChecked){
-                DialogUtil.createDialog(requireActivity(), v as Button)
+                DialogUtil.createDialog(requireActivity(), myViewModel, v as Button)
             }
         }
 
@@ -61,11 +66,21 @@ class KeyboardFragment : Fragment() {
             if (!switchKeyboard.isChecked){
                 when(event?.action){
                     MotionEvent.ACTION_DOWN -> {
-                        SerialPortBuilder.sendData(sendDownData[v?.id].toString())
+                        if (myViewModel.sendDownType[v?.id] == "Hex") {
+                            SerialPortBuilder.setSendDataType(SerialPort.SEND_HEX)
+                        } else {
+                            SerialPortBuilder.setSendDataType(SerialPort.SEND_STRING)
+                        }
+                        SerialPortBuilder.sendData(myViewModel.sendDownData[v?.id].toString())
                         return false
                     }
                     MotionEvent.ACTION_UP -> {
-                        SerialPortBuilder.sendData(sendUpData[v?.id].toString())
+                        if (myViewModel.sendUpType[v?.id] == "Hex") {
+                            SerialPortBuilder.setSendDataType(SerialPort.SEND_HEX)
+                        } else {
+                            SerialPortBuilder.setSendDataType(SerialPort.SEND_STRING)
+                        }
+                        SerialPortBuilder.sendData(myViewModel.sendUpData[v?.id].toString())
                         return false
                     }
                     MotionEvent.ACTION_CANCEL -> {
