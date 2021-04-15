@@ -17,12 +17,18 @@ import kotlinx.android.synthetic.main.activity_main.*
 import world.shanya.serialport.fragment.KeyboardFragment
 import world.shanya.serialport.fragment.MessageFragment
 import world.shanya.serialport.fragment.TerminalFragment
+import world.shanya.serialport.tools.SPName
+import world.shanya.serialport.tools.SPUtil
+import world.shanya.serialport.tools.SharedPreferencesUtil
+
+private const val AUTO_CONNECT = "AUTO_CONNECT"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var myViewModel: MyViewModel
     private lateinit var serialPort: SerialPort
     private var menuConnect: MenuItem? = null
+    private var menuAutoConnect: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +36,6 @@ class MainActivity : AppCompatActivity() {
 
         serialPort = SerialPortBuilder
                 .isDebug(true)
-                .autoConnect(true)
                 .setConnectStatusCallback { status, device ->
                     if (status) {
                         menuConnect?.title = "断开"
@@ -93,6 +98,7 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu,menu)
         menu?.let {
             menuConnect = menu.findItem(R.id.menuConnect)
+            menuAutoConnect = menu.findItem(R.id.menuAutoConnect)
         }
         return super.onCreateOptionsMenu(menu)
     }
@@ -104,6 +110,25 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menuConnect -> {
                 serialPort.openDiscoveryActivity()
+            }
+            R.id.menuAutoConnect -> {
+                val autoConnect = SharedPreferencesUtil.getString(this, AUTO_CONNECT)
+                if (autoConnect != "") {
+                    if (autoConnect == "true") {
+                        SerialPortBuilder.autoConnect(false)
+                        SharedPreferencesUtil.putString(this, AUTO_CONNECT,"false")
+                        menuAutoConnect?.title = "自动连接：已关闭"
+                    } else {
+                        SerialPortBuilder.autoConnect(true)
+                        SharedPreferencesUtil.putString(this, AUTO_CONNECT,"true")
+                        menuAutoConnect?.title = "自动连接：已开启"
+                    }
+                } else {
+                    SerialPortBuilder.autoConnect(true)
+                    SharedPreferencesUtil.putString(this, AUTO_CONNECT,"true")
+                    menuAutoConnect?.title = "自动连接：已开启"
+                }
+
             }
         }
         return super.onOptionsItemSelected(item)

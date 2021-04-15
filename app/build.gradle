@@ -49,5 +49,7 @@ dependencies {
     implementation 'com.github:ViewPager2:1.0.0'
     implementation 'com.ejlchina:okhttps-gson:3.0.1'
     implementation 'com.azhon:appupdateX:3.0.3'
-    implementation 'com.gitee.Shanya:SerialPortSample:3.0.0-beta4'
+    implementation 'com.gitee.Shanya:SerialPortSample:3.0.0-beta6'
+
+    implementation 'com.github.stfalcon-studio:Chatkit:0.4.1'
 }

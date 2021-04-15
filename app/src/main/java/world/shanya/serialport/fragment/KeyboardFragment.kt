@@ -3,32 +3,19 @@ package world.shanya.serialport.fragment
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import kotlinx.android.synthetic.main.fragment_keyboard.*
 import world.shanya.serialport.R
+import world.shanya.serialport.SerialPortBuilder
+import world.shanya.serialport.tools.DialogUtil
+import world.shanya.serialport.tools.SharedPreferencesUtil
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [KeyboardFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class KeyboardFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,23 +25,60 @@ class KeyboardFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_keyboard, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment KeyboardFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            KeyboardFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private val sendDownData = HashMap<Int,String>()
+    private val sendUpData = HashMap<Int,String>()
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        val buttons = arrayListOf<Button>(button1,button2,button3,button4,button5,
+            button6,button7,button8,button9,button10,
+            button11,button12,button13,button14,button15)
+
+        for (button in buttons){
+            button.text = SharedPreferencesUtil.getString(requireActivity(),"${button.id} Name")
+            sendDownData[button.id] =
+                SharedPreferencesUtil.getString(requireActivity(), "${button.id} DownData")
+                    .toString()
+            sendUpData[button.id] =
+                SharedPreferencesUtil.getString(requireActivity(), "${button.id} UpData")
+                    .toString()
+            button.setOnClickListener(ButtonListener())
+            button.setOnTouchListener(ButtonListener())
+        }
+
+    }
+
+    inner class ButtonListener: View.OnClickListener,View.OnTouchListener {
+
+        override fun onClick(v: View?) {
+            if (switchKeyboard.isChecked){
+                DialogUtil.createDialog(requireActivity(), v as Button)
+            }
+        }
+
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            if (!switchKeyboard.isChecked){
+                when(event?.action){
+                    MotionEvent.ACTION_DOWN -> {
+                        SerialPortBuilder.sendData(sendDownData[v?.id].toString())
+                        return false
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        SerialPortBuilder.sendData(sendUpData[v?.id].toString())
+                        return false
+                    }
+                    MotionEvent.ACTION_CANCEL -> {
+
+                        return false
+                    }
                 }
             }
+
+            return false
+        }
     }
+
+
+
 }

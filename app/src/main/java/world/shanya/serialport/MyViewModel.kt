@@ -7,8 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ejlchina.okhttps.GsonMsgConvertor
 import com.ejlchina.okhttps.HTTP
+import com.stfalcon.chatkit.messages.MessagesListAdapter
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import world.shanya.serialport.message.Message
+import world.shanya.serialport.message.MessageUtil
 import world.shanya.serialport.update.UpdateInfo
 
 class MyViewModel : ViewModel() {
@@ -19,8 +22,12 @@ class MyViewModel : ViewModel() {
 
     var showNewerToast = false
 
+
     init {
         _checkUpdate()
+        SerialPortBuilder.setReceivedDataListener {
+            MessageUtil.receivedMessage(it)
+        }
     }
 
     private fun _checkUpdate() {
