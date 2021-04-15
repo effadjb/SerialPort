@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import kotlinx.android.synthetic.main.fragment_message.*
+import world.shanya.serialport.MyViewModel
 import world.shanya.serialport.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -28,6 +31,14 @@ class MessageFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        val myViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
+            .create(MyViewModel::class.java)
+
     }
 
     override fun onCreateView(
