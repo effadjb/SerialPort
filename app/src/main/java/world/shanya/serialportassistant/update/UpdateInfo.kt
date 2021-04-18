@@ -1,4 +1,4 @@
-package world.shanya.serialport.update
+package world.shanya.serialportassistant.update
 
 data class UpdateInfo(
     val apkVersionCode: Int,

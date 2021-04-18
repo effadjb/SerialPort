@@ -1,4 +1,4 @@
-package world.shanya.serialport.message;
+package world.shanya.serialportassistant.message;
 
 import com.stfalcon.chatkit.commons.models.IUser;
 

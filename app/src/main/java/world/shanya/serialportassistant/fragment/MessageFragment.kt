@@ -1,4 +1,4 @@
-package world.shanya.serialport.fragment
+package world.shanya.serialportassistant.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -9,14 +9,15 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.fragment_message.*
 import kotlinx.android.synthetic.main.message_type_dialog.view.*
-import world.shanya.serialport.MyViewModel
-import world.shanya.serialport.R
+import world.shanya.serialportassistant.MyViewModel
+import world.shanya.serialportassistant.R
 import world.shanya.serialport.SerialPort
 import world.shanya.serialport.SerialPortBuilder
-import world.shanya.serialport.message.MessageUtil
+import world.shanya.serialportassistant.message.MessageUtil
 
 
 class MessageFragment : Fragment() {
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -25,8 +26,6 @@ class MessageFragment : Fragment() {
             ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory())[MyViewModel::class.java]
 
         messagesList.setAdapter(MessageUtil.messagesListAdapter)
-
-        val serialPort = SerialPortBuilder.build(requireActivity())
 
         messageInputView.setInputListener {
             SerialPortBuilder.sendData(it.toString())

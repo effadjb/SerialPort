@@ -1,12 +1,15 @@
-package world.shanya.serialport
+package world.shanya.serialportassistant
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.NewInstanceFactory
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.azhon.appupdate.config.UpdateConfiguration
 import com.azhon.appupdate.manager.DownloadManager
@@ -14,16 +17,15 @@ import com.azhon.appupdate.utils.ApkUtil
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import world.shanya.serialport.fragment.KeyboardFragment
-import world.shanya.serialport.fragment.MessageFragment
-import world.shanya.serialport.fragment.TerminalFragment
-import world.shanya.serialport.tools.SPName
-import world.shanya.serialport.tools.SPUtil
-import world.shanya.serialport.tools.SharedPreferencesUtil
-
-private const val AUTO_CONNECT = "AUTO_CONNECT"
+import kotlinx.android.synthetic.main.fragment_setting.*
+import top.defaults.colorpicker.ColorPickerPopup
+import top.defaults.colorpicker.ColorPickerView
+import world.shanya.serialport.SerialPort
+import world.shanya.serialport.SerialPortBuilder
+import world.shanya.serialportassistant.fragment.KeyboardFragment
+import world.shanya.serialportassistant.fragment.MessageFragment
+import world.shanya.serialportassistant.fragment.TerminalFragment
+import world.shanya.serialportassistant.tools.SharedPreferencesUtil
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,12 +36,29 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        serialPort = SerialPortBuilder
-                .isDebug(true)
-                .autoConnect(true)
+        val autoConnect = SharedPreferencesUtil.getString(this, SerialPortConstText.autoConnectSpName)
+        serialPort = if (autoConnect == null) {
+            SerialPortBuilder
+                .autoConnect(false)
                 .build(this)
+        } else {
+            if (autoConnect == "true") {
+                SerialPortBuilder
+                    .autoConnect(true)
+                    .build(this)
+            } else {
+                SerialPortBuilder
+                    .autoConnect(false)
+                    .build(this)
+            }
+        }
 
         myViewModel = ViewModelProvider(this, NewInstanceFactory())[MyViewModel::class.java]
+
+        val keyboardColorTemp = SharedPreferencesUtil.getString(this,SerialPortConstText.keyboardColorSpName)
+        if (keyboardColorTemp != "") {
+            myViewModel.keyboardColorLiveData.value = keyboardColorTemp?.toInt()
+        }
 
         myViewModel.updateInfoLiveData.observe(this, Observer {
             it?.let {
@@ -65,29 +84,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        viewPager.adapter = object : FragmentStateAdapter(this) {
-            override fun getItemCount() = 3
-            override fun createFragment(position: Int) =
-                    when (position) {
-                        0 -> MessageFragment()
-                        1 -> KeyboardFragment()
-                        else -> TerminalFragment()
-                    }
-        }
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                title = when (tab?.position) {
-                    0 -> "通信"
-                    1 -> "按键"
-                    else -> "自定义键盘"
-                }
-            }
-        })
-
-        TabLayoutMediator(tabLayout, viewPager) { _, _ -> }.attach()
+        NavigationUI.setupActionBarWithNavController(this,findNavController(R.id.fragment))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -103,7 +100,14 @@ class MainActivity : AppCompatActivity() {
             R.id.menuConnect -> {
                 serialPort.openDiscoveryActivity()
             }
+            R.id.menuSetting -> {
+                findNavController(R.id.fragment).navigate(R.id.action_mainFragment_to_settingFragment)
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return super.onSupportNavigateUp() || findNavController(R.id.fragment).navigateUp()
     }
 }

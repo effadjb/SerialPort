@@ -1,18 +1,16 @@
-package world.shanya.serialport
+package world.shanya.serialportassistant
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ejlchina.okhttps.GsonMsgConvertor
 import com.ejlchina.okhttps.HTTP
-import com.stfalcon.chatkit.messages.MessagesListAdapter
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import world.shanya.serialport.message.Message
-import world.shanya.serialport.message.MessageUtil
-import world.shanya.serialport.update.UpdateInfo
+import world.shanya.serialport.SerialPortBuilder
+import world.shanya.serialportassistant.message.MessageUtil
+import world.shanya.serialportassistant.update.UpdateInfo
 
 class MyViewModel : ViewModel() {
 
@@ -27,6 +25,7 @@ class MyViewModel : ViewModel() {
     val sendDownType = HashMap<Int, String>()
     val sendUpType = HashMap<Int, String>()
 
+    val keyboardColorLiveData = MutableLiveData<Int>()
 
     init {
         _checkUpdate()
@@ -37,11 +36,11 @@ class MyViewModel : ViewModel() {
 
     private fun _checkUpdate() {
         val http = HTTP.builder()
-            .baseUrl("https://gitee.com/Shanya/Test/raw/master")
+            .baseUrl(SerialPortConstText.updateBaseUrl)
             .addMsgConvertor(GsonMsgConvertor())
             .build()
         showNewerToast = false
-        http.async("/update.json")
+        http.async(SerialPortConstText.updateUrl)
             .setOnResponse { httpResult ->
                 val updateInfo = httpResult.body.toBean(UpdateInfo::class.java)
                 MainScope().launch {

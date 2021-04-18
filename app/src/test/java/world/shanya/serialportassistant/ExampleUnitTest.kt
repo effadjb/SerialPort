@@ -1,4 +1,4 @@
-package world.shanya.serialport
+package world.shanya.serialportassistant
 
 import org.junit.Test
 
