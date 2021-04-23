@@ -1,6 +1,5 @@
 package world.shanya.serialportassistant
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,21 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.NewInstanceFactory
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.azhon.appupdate.config.UpdateConfiguration
 import com.azhon.appupdate.manager.DownloadManager
 import com.azhon.appupdate.utils.ApkUtil
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_setting.*
-import top.defaults.colorpicker.ColorPickerPopup
-import top.defaults.colorpicker.ColorPickerView
 import world.shanya.serialport.SerialPort
 import world.shanya.serialport.SerialPortBuilder
-import world.shanya.serialportassistant.fragment.KeyboardFragment
-import world.shanya.serialportassistant.fragment.MessageFragment
-import world.shanya.serialportassistant.fragment.TerminalFragment
+import world.shanya.serialportassistant.tools.SerialPortText
 import world.shanya.serialportassistant.tools.SharedPreferencesUtil
 
 class MainActivity : AppCompatActivity() {
@@ -36,7 +26,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val autoConnect = SharedPreferencesUtil.getString(this, SerialPortConstText.autoConnectSpName)
+        val autoConnect = SharedPreferencesUtil.getString(this, SerialPortText.autoConnectSpName)
+
         serialPort = if (autoConnect == null) {
             SerialPortBuilder
                 .autoConnect(false)
@@ -55,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         myViewModel = ViewModelProvider(this, NewInstanceFactory())[MyViewModel::class.java]
 
-        val keyboardColorTemp = SharedPreferencesUtil.getString(this,SerialPortConstText.keyboardColorSpName)
+        val keyboardColorTemp = SharedPreferencesUtil.getString(this, SerialPortText.keyboardColorSpName)
         if (keyboardColorTemp != "") {
             myViewModel.keyboardColorLiveData.value = keyboardColorTemp?.toInt()
         }

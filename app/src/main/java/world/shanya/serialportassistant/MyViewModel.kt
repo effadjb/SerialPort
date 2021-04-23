@@ -1,6 +1,5 @@
 package world.shanya.serialportassistant
 
-import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +9,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import world.shanya.serialport.SerialPortBuilder
 import world.shanya.serialportassistant.message.MessageUtil
+import world.shanya.serialportassistant.tools.SerialPortText
 import world.shanya.serialportassistant.update.UpdateInfo
 
 class MyViewModel : ViewModel() {
@@ -20,12 +20,12 @@ class MyViewModel : ViewModel() {
 
     var showNewerToast = false
 
+    val keyboardColorLiveData = MutableLiveData<Int>()
+
     val sendDownData = HashMap<Int, String>()
     val sendUpData = HashMap<Int, String>()
     val sendDownType = HashMap<Int, String>()
     val sendUpType = HashMap<Int, String>()
-
-    val keyboardColorLiveData = MutableLiveData<Int>()
 
     init {
         _checkUpdate()
@@ -36,11 +36,11 @@ class MyViewModel : ViewModel() {
 
     private fun _checkUpdate() {
         val http = HTTP.builder()
-            .baseUrl(SerialPortConstText.updateBaseUrl)
+            .baseUrl(SerialPortText.updateBaseUrl)
             .addMsgConvertor(GsonMsgConvertor())
             .build()
         showNewerToast = false
-        http.async(SerialPortConstText.updateUrl)
+        http.async(SerialPortText.updateUrl)
             .setOnResponse { httpResult ->
                 val updateInfo = httpResult.body.toBean(UpdateInfo::class.java)
                 MainScope().launch {

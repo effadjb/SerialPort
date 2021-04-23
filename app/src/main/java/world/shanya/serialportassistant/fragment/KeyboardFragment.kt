@@ -14,8 +14,8 @@ import world.shanya.serialportassistant.MyViewModel
 import world.shanya.serialportassistant.R
 import world.shanya.serialport.SerialPort
 import world.shanya.serialport.SerialPortBuilder
-import world.shanya.serialportassistant.SerialPortConstText
 import world.shanya.serialportassistant.tools.DialogUtil
+import world.shanya.serialportassistant.tools.SerialPortText
 import world.shanya.serialportassistant.tools.SharedPreferencesUtil
 
 

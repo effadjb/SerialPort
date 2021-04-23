@@ -1,6 +1,5 @@
-package world.shanya.serialportassistant
+package world.shanya.serialportassistant.fragment
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +8,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.fragment_setting.*
 import top.defaults.colorpicker.ColorPickerPopup
+import world.shanya.serialportassistant.MyViewModel
+import world.shanya.serialportassistant.R
+import world.shanya.serialportassistant.tools.SerialPortText
 import world.shanya.serialportassistant.tools.SharedPreferencesUtil
 
 
@@ -28,7 +30,7 @@ class SettingFragment : Fragment() {
         super.onStart()
         val autoConnect = SharedPreferencesUtil.getString(
             requireActivity(),
-            SerialPortConstText.autoConnectSpName)
+            SerialPortText.autoConnectSpName)
         if (autoConnect == null) {
             autoConnectSwitch.isChecked = false
         } else {
@@ -45,9 +47,11 @@ class SettingFragment : Fragment() {
             ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory())[MyViewModel::class.java]
         autoConnectSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                SharedPreferencesUtil.putString(requireActivity(),SerialPortConstText.autoConnectSpName,"true")
+                SharedPreferencesUtil.putString(requireActivity(),
+                    SerialPortText.autoConnectSpName,"true")
             } else {
-                SharedPreferencesUtil.putString(requireActivity(),SerialPortConstText.autoConnectSpName,"false")
+                SharedPreferencesUtil.putString(requireActivity(),
+                    SerialPortText.autoConnectSpName,"false")
             }
         }
 
@@ -66,7 +70,7 @@ class SettingFragment : Fragment() {
                         keyboardCurrentColor.setBackgroundColor(color)
                         SharedPreferencesUtil.putString(
                             requireActivity(),
-                            SerialPortConstText.keyboardColorSpName,
+                            SerialPortText.keyboardColorSpName,
                             color.toString())
                     }
                 })

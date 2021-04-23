@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="world.shanya.serialportassistant.MainFragment"
+        android:name="world.shanya.serialportassistant.fragment.MainFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_main">
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingFragment"
-        android:name="world.shanya.serialportassistant.SettingFragment"
+        android:name="world.shanya.serialportassistant.fragment.SettingFragment"
         android:label="设置"
         tools:layout="@layout/fragment_setting" />
 </navigation>
