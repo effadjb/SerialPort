@@ -38,6 +38,7 @@ class SettingFragment : Fragment() {
         }
 
         keyboardCurrentColor.setBackgroundColor(myViewModel.keyboardColorLiveData.value ?: 0xFF6200EE.toInt())
+        keyboardTextCurrentColor.setBackgroundColor(myViewModel.keyboardColorTextLiveData.value ?: 0xFFBBEAF8.toInt())
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -74,6 +75,27 @@ class SettingFragment : Fragment() {
                             color.toString())
                     }
                 })
+        }
+
+        keyBoardTextColor.setOnClickListener {
+            ColorPickerPopup.Builder(requireActivity())
+                    .initialColor(0xFFBBEAF8.toInt())
+                    .enableAlpha(true)
+                    .okTitle("确定")
+                    .cancelTitle("取消")
+                    .showIndicator(true)
+                    .showValue(true)
+                    .build()
+                    .show(object : ColorPickerPopup.ColorPickerObserver() {
+                        override fun onColorPicked(color: Int) {
+                            myViewModel.keyboardColorTextLiveData.value = color
+                            keyboardTextCurrentColor.setBackgroundColor(color)
+                            SharedPreferencesUtil.putString(
+                                    requireActivity(),
+                                    SerialPortText.keyboardTextColorSpName,
+                                    color.toString())
+                        }
+                    })
         }
 
     }

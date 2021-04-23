@@ -48,6 +48,12 @@ class KeyboardFragment : Fragment() {
             }
         })
 
+        myViewModel.keyboardColorTextLiveData.observe(requireActivity(), Observer {
+            for (button in buttons) {
+                button.setTextColor(it)
+            }
+        })
+
         for (button in buttons){
             button.text = SharedPreferencesUtil.getString(requireActivity(),"${button.id} Name")
             myViewModel.sendDownData[button.id] =

@@ -50,6 +50,10 @@ class MainActivity : AppCompatActivity() {
         if (keyboardColorTemp != "") {
             myViewModel.keyboardColorLiveData.value = keyboardColorTemp?.toInt()
         }
+        val keyboardTextColorTemp = SharedPreferencesUtil.getString(this, SerialPortText.keyboardTextColorSpName)
+        if (keyboardTextColorTemp != "") {
+            myViewModel.keyboardColorTextLiveData.value = keyboardTextColorTemp?.toInt()
+        }
 
         myViewModel.updateInfoLiveData.observe(this, Observer {
             it?.let {

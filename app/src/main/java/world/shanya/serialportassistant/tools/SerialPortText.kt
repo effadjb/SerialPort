@@ -5,5 +5,6 @@ object SerialPortText {
     const val updateUrl = "/update.json"
     const val autoConnectSpName = "AUTO_CONNECT"
     const val keyboardColorSpName = "KEYBOARD_COLOR"
+    const val keyboardTextColorSpName = "KEYBOARD_TEXT_COLOR"
     const val REQUEST_ENABLE_BT = 0x123
 }

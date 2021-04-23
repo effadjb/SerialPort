@@ -21,6 +21,7 @@ class MyViewModel : ViewModel() {
     var showNewerToast = false
 
     val keyboardColorLiveData = MutableLiveData<Int>()
+    val keyboardColorTextLiveData = MutableLiveData<Int>()
 
     val sendDownData = HashMap<Int, String>()
     val sendUpData = HashMap<Int, String>()
