@@ -101,7 +101,12 @@ class MainActivity : AppCompatActivity() {
                 serialPort.openDiscoveryActivity()
             }
             R.id.menuSetting -> {
+                findNavController(R.id.fragment).navigateUp()
                 findNavController(R.id.fragment).navigate(R.id.action_mainFragment_to_settingFragment)
+            }
+            R.id.menuAbout -> {
+                findNavController(R.id.fragment).navigateUp()
+                findNavController(R.id.fragment).navigate(R.id.action_mainFragment_to_aboutFragment)
             }
         }
         return super.onOptionsItemSelected(item)
