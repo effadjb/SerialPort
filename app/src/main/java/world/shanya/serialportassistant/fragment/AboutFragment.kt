@@ -30,10 +30,6 @@ class AboutFragment : Fragment() {
         val copyrights = String.format(requireActivity().getString(R.string.copy_right),
             Calendar.getInstance().get(Calendar.YEAR))
         copyRightsElement.title = copyrights
-//        copyRightsElement.iconDrawable = R.drawable.about_icon_copy_right
-//        copyRightsElement.autoApplyIconTint = true
-//        copyRightsElement.iconTint = mehdi.sakout.aboutpage.R.color.about_item_icon_color
-//        copyRightsElement.iconNightTint = android.R.color.white
         copyRightsElement.gravity = Gravity.CENTER
         copyRightsElement.onClickListener =
             View.OnClickListener {
